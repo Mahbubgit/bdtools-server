@@ -10,9 +10,9 @@ app.use(express.json());
 
 
 app.get('/', (req, res) => {
-  res.send('Hello Doctor Portal!')
+  res.send('Hello BD Tools!')
 })
 
 app.listen(port, () => {
-  console.log(`Doctors app listening on port ${port}`)
+  console.log(`BD Tools app listening on port ${port}`)
 })
