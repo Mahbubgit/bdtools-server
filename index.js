@@ -18,15 +18,25 @@ async function run() {
   try {
     // to connect to database tools-portal/tools
     await client.connect();
-    const serviceCollection = client.db('bdtools_portal').collection('tools');
+    const toolsCollection = client.db('bdtools_portal').collection('tools');
+    const reviewsCollection = client.db('bdtools_portal').collection('reviews');
 
     // to get all tools / TOOLS API
 
     app.get('/tools', async (req, res) => {
       const query = {};
-      const cursor = serviceCollection.find(query);
+      const cursor = toolsCollection.find(query);
       const tools = await cursor.toArray();
       res.send(tools);
+    });
+    
+    // to get all reviews / REVIEWS API
+
+    app.get('/reviews', async (req, res) => {
+      const query = {};
+      const cursor = reviewsCollection.find(query);
+      const reviews = await cursor.toArray();
+      res.send(reviews);
     });
 
   }
