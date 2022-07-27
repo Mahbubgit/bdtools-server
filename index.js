@@ -1,9 +1,10 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
+
 
 // middleware
 app.use(cors());
@@ -17,9 +18,11 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
   try {
     // to connect to database tools-portal/tools
+
     await client.connect();
     const toolsCollection = client.db('bdtools_portal').collection('tools');
     const reviewsCollection = client.db('bdtools_portal').collection('reviews');
+    const orderCollection = client.db('bdtools_portal').collection('order');
 
     // to get all tools / TOOLS API
 
@@ -30,6 +33,23 @@ async function run() {
       res.send(tools);
     });
     
+    // to get individual tool/ Find a tool API
+
+    app.get('/tool/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const tool = await toolsCollection.findOne(query);
+      res.send(tool);
+    });
+
+    // to post an order/ PURCHASE/ORDER API
+
+    app.post('/order', async (req, res) => {
+      const order = req.body;
+      const result = await orderCollection.insertOne(order)
+      res.send(result);
+    })
+
     // to get all reviews / REVIEWS API
 
     app.get('/reviews', async (req, res) => {
