@@ -38,18 +38,9 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-<<<<<<< HEAD
   res.send('Hello BDTools!')
 })
 
 app.listen(port, () => {
   console.log(`BDTools app listening on port ${port}`)
 })
-=======
-  res.send('Hello BD Tools!')
-})
-
-app.listen(port, () => {
-  console.log(`BD Tools app listening on port ${port}`)
-})
->>>>>>> 6ce67959bf8fef1a13697cd0eedb3adf536cf1fd
