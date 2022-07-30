@@ -42,6 +42,7 @@ async function run() {
     const reviewsCollection = client.db('bdtools_portal').collection('reviews');
     const orderCollection = client.db('bdtools_portal').collection('order');
     const userCollection = client.db('bdtools_portal').collection('users');
+    const toolsTypeCollection = client.db('bdtools_portal').collection('toolsType');
 
 
     // To verify whether an user is admin or not
@@ -87,12 +88,13 @@ async function run() {
     // to view all user
 
     app.get('/user', verifyJWT, async (req, res) => {
+    // app.get('/user', async (req, res) => {
       const users = await userCollection.find().toArray();
       res.send(users);
     });
 
     // To show all user with role (make an admin)
-    app.put('/user/admin/:email', verifyJWT, verifyAdmin, async (req, res) => {
+    app.put('/user/admin/:email', verifyJWT, async (req, res) => {
       const email = req.params.email;
 
       const filter = { email: email };
@@ -107,6 +109,7 @@ async function run() {
     app.put('/user/:email', async (req, res) => {
       const email = req.params.email;
       const user = req.body;
+      // console.log(user);
       const filter = { email: email };
       const options = { upsert: true };
 
@@ -162,12 +165,25 @@ async function run() {
       res.send(tool);
     });
 
+    
+
     // To add a tool
-    // app.post('/tool', verifyJWT, verifyAdmin, async (req, res) => {
-    //   const tool = req.body;
-    //   const result = await toolsCollection.insertOne(tool);
-    //   res.send(result);
-    // });
+    app.post('/tool', verifyJWT, verifyAdmin, async (req, res) => {
+      const tool = req.body;
+      const result = await toolsCollection.insertOne(tool);
+      res.send(result);
+    });
+
+    /******************************ToolsType API************************************ */
+
+    // to get all toolsType / TOOLSTYPE API
+
+    app.get('/toolsType', async (req, res) => {
+      const query = {};
+      const cursor = toolsTypeCollection.find(query);
+      const toolsType = await cursor.toArray();
+      res.send(toolsType);
+    });
 
     /******************************Order API************************************ */
 
@@ -225,6 +241,7 @@ async function run() {
     // });
 
     /********************Review API******************************** */
+    
     // to get all reviews / REVIEWS API
 
     app.get('/reviews', async (req, res) => {
