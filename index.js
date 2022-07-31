@@ -165,12 +165,22 @@ async function run() {
       res.send(tool);
     });
 
-    
-
     // To add a tool
     app.post('/tool', verifyJWT, verifyAdmin, async (req, res) => {
       const tool = req.body;
       const result = await toolsCollection.insertOne(tool);
+      res.send(result);
+    });
+
+    // For Cancel/delete an Product or tool / DELETE TOOL API
+
+    app.delete('/tool/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await toolsCollection.deleteOne(query);
+      if (result.deletedCount === 1) {
+        console.log("Successfully deleted your product.");
+      }
       res.send(result);
     });
 
