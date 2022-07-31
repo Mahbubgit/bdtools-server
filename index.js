@@ -205,7 +205,7 @@ async function run() {
       res.send(result);
     });
 
-    // For Cancel/delete an Order / DELETE ORDER API
+    // For Cancel/delete an Order / DELETE ORDER API 
 
     app.delete('/order/:id', async (req, res) => {
       const id = req.params.id;
@@ -242,13 +242,27 @@ async function run() {
       res.send(paymentOrder);
     });
 
-    // to get all orders
-    // app.get('/order', async (req, res) => {
-    //   const query = {};
-    //   const cursor = orderCollection.find(query);
-    //   const orders = await cursor.toArray();
-    //   res.send(orders);
-    // });
+    // to get all orders/ MANAGE ORDERS API
+
+    app.get('/orders', async (req, res) => {
+      const query = {};
+      const cursor = orderCollection.find(query);
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
+
+    // To ship an order by admin
+
+    app.put('/orders/shippedOrder/:id', verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+
+      const updateDoc = {
+        $set: { status: 'shipped' },
+      };
+      const result = await orderCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
 
     /********************Review API******************************** */
     
