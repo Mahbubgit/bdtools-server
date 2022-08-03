@@ -23,7 +23,6 @@ function verifyJWT(req, res, next) {
     if (err) {
       return res.status(403).send({ message: 'Forbidden Access' });
     }
-    // console.log('decoded', decoded);
     req.decoded = decoded;
     next();
   });
@@ -63,7 +62,7 @@ async function run() {
     app.post('/login', async (req, res) => {
       const user = req.body;
       const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: '1d'
+        expiresIn: '1h'
       });
       res.send({ accessToken });
     });
@@ -72,8 +71,8 @@ async function run() {
 
     app.post('/create-payment-intent', verifyJWT, async (req, res) => {
       const order = req.body;
-      const price = order.price;
-      const amount = price * 100;
+      const orderPrice = order.orderPrice;
+      const amount = orderPrice * 100;
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
         currency: 'usd',
@@ -87,10 +86,41 @@ async function run() {
 
     // to view all user
 
+    // app.get('/user', verifyJWT, async (req, res) => {
+    //   const users = await userCollection.find().toArray();
+    //   res.send(users);
+    // });
+
+    // to get user data of a particular user/client/customer from update profile data
+
     app.get('/user', verifyJWT, async (req, res) => {
-    // app.get('/user', async (req, res) => {
-      const users = await userCollection.find().toArray();
-      res.send(users);
+      const email = req.query.email;
+      const decodedEmail = req.decoded.email;
+      if (email === decodedEmail) {
+        const query = { email: email };
+        const result = await userCollection.find(query).toArray();
+        res.send(result);
+      }
+      else {
+        return res.status(403).send({ message: 'Forbidden Access' });
+      }
+
+    });
+
+    // To update an user profile to database
+
+    app.put('/user/profile/:email', async (req, res) => {
+      const email = req.params.email;
+      const user = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+
+      const updateDoc = {
+        $set: user,
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
+      res.send({ result, token });
     });
 
     // To show all user with role (make an admin)
@@ -107,23 +137,6 @@ async function run() {
 
     // To add an user to database
     app.put('/user/:email', async (req, res) => {
-      const email = req.params.email;
-      const user = req.body;
-      // console.log(user);
-      const filter = { email: email };
-      const options = { upsert: true };
-
-      const updateDoc = {
-        $set: user,
-      };
-      const result = await userCollection.updateOne(filter, updateDoc, options);
-      const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
-      res.send({ result, token });
-    });
-
-    // To update an user profile to database
-
-    app.put('/user/profile/:email', async (req, res) => {
       const email = req.params.email;
       const user = req.body;
       const filter = { email: email };
@@ -265,7 +278,7 @@ async function run() {
     });
 
     /********************Review API******************************** */
-    
+
     // to get all reviews / REVIEWS API
 
     app.get('/reviews', async (req, res) => {
