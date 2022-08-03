@@ -86,10 +86,10 @@ async function run() {
 
     // to view all user
 
-    // app.get('/user', verifyJWT, async (req, res) => {
-    //   const users = await userCollection.find().toArray();
-    //   res.send(users);
-    // });
+    app.get('/allUser', verifyJWT, async (req, res) => {
+      const users = await userCollection.find().toArray();
+      res.send(users);
+    });
 
     // to get user data of a particular user/client/customer from update profile data
 
