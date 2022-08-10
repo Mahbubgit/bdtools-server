@@ -199,7 +199,7 @@ async function run() {
 
     /******************************ToolsType API************************************ */
 
-    // to get all toolsType / TOOLSTYPE API
+    // to get all toolsType / TO SHOW ALL TOOLSTYPE API
 
     app.get('/toolsType', async (req, res) => {
       const query = {};
@@ -210,7 +210,7 @@ async function run() {
 
     /******************************Order API************************************ */
 
-    // to post an order/ PURCHASE/ORDER API
+    // to post an order/ TO MAKE A PURCHASE/ORDER API
 
     app.post('/order', async (req, res) => {
       const order = req.body;
@@ -218,7 +218,7 @@ async function run() {
       res.send(result);
     });
 
-    // For Cancel/delete an Order / DELETE ORDER API 
+    // For Cancel/delete an Order / TO DELETE AN ORDER API 
 
     app.delete('/order/:id', async (req, res) => {
       const id = req.params.id;
@@ -230,7 +230,7 @@ async function run() {
       res.send(result);
     });
 
-    // to get order data of a particular client/customer
+    // to get order data of a particular client/customer / To show an ORDER API
 
     app.get('/order', verifyJWT, async (req, res) => {
       const email = req.query.email;
@@ -255,7 +255,7 @@ async function run() {
       res.send(paymentOrder);
     });
 
-    // to get all orders/ MANAGE ORDERS API
+    // to get all orders/ To show all ORDERS API (Manage Orders Api)
 
     app.get('/orders', async (req, res) => {
       const query = {};
@@ -264,7 +264,7 @@ async function run() {
       res.send(orders);
     });
 
-    // To ship an order by admin
+    // To ship an order by admin / SHIPMENT API By Admin
 
     app.put('/orders/shippedOrder/:id', verifyJWT, async (req, res) => {
       const id = req.params.id;
@@ -279,7 +279,7 @@ async function run() {
 
     /********************Review API******************************** */
 
-    // to get all reviews / REVIEWS API
+    // to get all reviews / To Show all REVIEWS API
 
     app.get('/reviews', async (req, res) => {
       const query = {};
@@ -289,7 +289,7 @@ async function run() {
     });
 
 
-    // to post a review/ REVIEW API
+    // to post a review/ Add a REVIEW API
 
     app.post('/review', async (req, res) => {
       const review = req.body;
